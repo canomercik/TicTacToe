@@ -1,8 +1,6 @@
 # Tic Tac Toe Android
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/0d624d7c-a7f1-4cc9-a5d0-d08b41abd17e" alt="Welcome Screen GIF" />
-</p>
+![TicTacToe](https://github.com/user-attachments/assets/317cca57-d9e6-41f1-af2b-c694b8465c15)
 
 A simple yet feature-rich Tic Tac Toe game built for Android. It demonstrates animations, AI opponents, scoring, and localization.
 
@@ -16,27 +14,6 @@ A simple yet feature-rich Tic Tac Toe game built for Android. It demonstrates an
 * **Scoring System**: Based on number of moves, time elapsed, and difficulty multiplier with high-score persistence
 * **Localization**: English and Turkish support with runtime language switching
 * **Full-Screen Immersive** experience without status or action bars
-
----
-
-## 📸 Screenshots & Demo
-
-1. **Welcome Screen**
-
-   * ![Welcome Screen](docs/welcome.png)
-     *(Or use a GIF: `docs/welcome.gif`)*
-
-2. **Mode & Difficulty Selection**
-
-   * ![Mode Selection](docs/mode_selection.png)
-
-3. **Gameplay (PvBot on Hard)**
-
-   * ![Gameplay](docs/gameplay.gif)
-
-4. **Score & High Score Display**
-
-   * ![Score Screen](docs/score.png)
 
 ---
 
