@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Tic Tac Toe</string>
+
+    <!-- Status mesajları -->
+    <string name="status_x_turn">Player X\'s Turn</string>
+    <string name="status_o_turn">Player O\'s Turn</string>
+    <string name="msg_draw">It\'s a Draw!</string>
+    <string name="msg_wins">Player %1$s Wins!</string>
+
+    <!-- Buton metinleri -->
+    <string name="btn_reset">Reset</string>
+    <string name="btn_settings">Settings</string>
+
+    <!-- Score ekranı -->
+    <string name="label_score">Score: </string>
+    <string name="label_high_score">High Score: </string>
+    <string name="toast_new_high_score">🎉 New High Score!</string>
+
+    <!-- Zorluk seviyeleri -->
+    <string name="level_easy">Easy</string>
+    <string name="level_medium">Medium</string>
+    <string name="level_hard">Hard</string>
+
+    <!-- Mode seçim dialog -->
+    <string name="mode_pvp">Player vs Player</string>
+    <string name="mode_pvb">Player vs Bot</string>
+    <string name="select_mode">Select Mode</string>
+    <string name="select_difficulty">Select Difficulty</string>
+    <string name="btn_next">Next</string>
+    <string name="btn_back">Back</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="tap_to_start">TAP TO START</string>
+</resources>

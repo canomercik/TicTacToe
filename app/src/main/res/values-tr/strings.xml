@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">XOX Oyunu</string>
+
+    <!-- Durum mesajları -->
+    <string name="status_x_turn">X Oyuncusunun Sırası</string>
+    <string name="status_o_turn">O Oyuncusunun Sırası</string>
+    <string name="msg_draw">Berabere!</string>
+    <string name="msg_wins">%1$s Kazandı!</string>
+
+    <!-- Buton metinleri -->
+    <string name="btn_reset">Yeniden Başlat</string>
+    <string name="btn_settings">Ayarlar</string>
+
+    <!-- Score ekranı -->
+    <string name="label_score">Puan: </string>
+    <string name="label_high_score">En Yüksek Puan: </string>
+    <string name="toast_new_high_score">🎉 Yeni Rekor!</string>
+
+    <!-- Zorluk seviyeleri -->
+    <string name="level_easy">Kolay</string>
+    <string name="level_medium">Orta</string>
+    <string name="level_hard">Zor</string>
+
+    <!-- Mod seçim dialog -->
+    <string name="mode_pvp">Oyuncu vs Oyuncu</string>
+    <string name="mode_pvb">Oyuncu vs Bot</string>
+    <string name="select_mode">Mod Seçin</string>
+    <string name="select_difficulty">Zorluk Seçin</string>
+    <string name="btn_next">İleri</string>
+    <string name="btn_back">Geri</string>
+    <string name="btn_start">Başla</string>
+    <string name="btn_cancel">İptal</string>
+    <string name="tap_to_start">BAŞLAMAK İÇİN DOKUN</string>
+</resources>

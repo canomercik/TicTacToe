@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    tools:context=".MainActivity">
+
+    <!-- Top Bar: Title + Reset + Settings -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_name"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:gravity="start|center_vertical"
+            android:layout_margin="12dp"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnReset"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical"
+            app:backgroundTint="@color/white"
+
+            app:srcCompat="@drawable/refresh_24" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnSettings"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical"
+            app:backgroundTint="@color/white"
+            app:srcCompat="@drawable/language" />
+
+    </LinearLayout>
+
+    <!-- Center Content: Grid + Status -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <!-- Tic Tac Toe Board -->
+        <GridLayout
+            android:id="@+id/gridLayout"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:columnCount="3"
+            android:rowCount="3">
+
+            <!-- 9 Buttons for Tic Tac Toe -->
+            <Button
+                android:id="@+id/btn00"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp"
+                android:layout_marginEnd="10dp"/>
+
+            <Button
+                android:id="@+id/btn01"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp"
+                android:layout_marginEnd="10dp"/>
+            <Button
+                android:id="@+id/btn02"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp" />
+
+            <Button
+                android:id="@+id/btn10"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp" />
+
+            <Button
+                android:id="@+id/btn11"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp" />
+
+            <Button
+                android:id="@+id/btn12"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp" />
+
+            <Button
+                android:id="@+id/btn20"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp" />
+
+            <Button
+                android:id="@+id/btn21"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp" />
+
+            <Button
+                android:id="@+id/btn22"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text=""
+                android:textSize="32sp" />
+        </GridLayout>
+
+        <!-- Status Text -->
+        <TextView
+            android:id="@+id/textViewStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/status_x_turn"
+            android:textSize="24sp"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/textViewScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_score"
+        android:textSize="18sp"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/textViewHighScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_high_score"
+        android:textSize="18sp"
+        android:layout_marginTop="4dp"/>
+
+
+</LinearLayout>
