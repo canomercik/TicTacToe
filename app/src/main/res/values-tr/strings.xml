@@ -19,7 +19,7 @@
     <!-- Zorluk seviyeleri -->
     <string name="level_easy">Kolay</string>
     <string name="level_medium">Orta</string>
-    <string name="level_hard">Zor</string>
+    <string name="level_hard">Zor (AI)</string>
 
     <!-- Mod seçim dialog -->
     <string name="mode_pvp">Oyuncu vs Oyuncu</string>
