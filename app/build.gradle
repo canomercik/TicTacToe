@@ -13,7 +13,13 @@ android {
         versionCode 1
         versionName "1.0"
 
+        buildConfigField "String", "OPENAI_API_KEY", "\"${project.property('OPENAI_API_KEY')}\""
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
@@ -29,6 +35,8 @@ android {
 }
 
 dependencies {
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "org.json:json:20230227"
 
     implementation libs.appcompat
     implementation libs.material

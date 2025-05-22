@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +25,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,44 +99,32 @@ public class MainActivity extends AppCompatActivity {
             for (int j = 0; j < 3; j++) {
                 Button button = (Button) gridLayout.getChildAt(index++);
                 buttons[i][j] = button;
-                final int fi = i, fj = j;
-
                 button.setOnClickListener(v -> {
-                    // Zaten doluysa pas geç
-                    if (!button.getText().toString().isEmpty()) return;
+                    if (!button.getText().toString().isEmpty() || gameOver) return;
                     moveCount++;
-
-                    // İnsan hamlesi
+                    // Only set the symbol for current player
                     if (playerXTurn) {
                         button.setText("X");
-                        textViewStatus.setText(
-                                getString(R.string.status_o_turn)
-                        );
+                        textViewStatus.setText(getString(R.string.status_o_turn));
+                    } else {
                         button.setText("O");
-                        textViewStatus.setText(
-                                getString(R.string.status_x_turn)
-                        );
+                        textViewStatus.setText(getString(R.string.status_x_turn));
                     }
                     playerXTurn = !playerXTurn;
+
                     checkWinner();
 
-                    // Eğer bot modu ve şu an O sırasıysa bot hamlesini tetikle
                     if (vsBot && !playerXTurn && moveCount < 9) {
                         handler.postDelayed(this::botMove, 500);
                     }
-
-                    // Beraberlik kontrolü
-                    if (moveCount == 9) {
-                        textViewStatus.setText(
-                                getString(R.string.msg_draw)
-                        );
+                    if (moveCount == 9 && !gameOver) {
+                        textViewStatus.setText(getString(R.string.msg_draw));
                         gameOver = true;
                         disableButtons();
                     }
                 });
             }
         }
-
         // 3) Reset butonu
         btnReset.setOnClickListener(v -> resetGame());
 
@@ -160,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
     /** BOT HAMLESİ **/
     private void botMove() {
         if (gameOver) return;
+
         // 1) Boş hücreleri topla
         List<int[]> empties = new ArrayList<>();
         for (int i = 0; i < 3; i++)
@@ -168,39 +161,23 @@ public class MainActivity extends AppCompatActivity {
                     empties.add(new int[]{i, j});
         if (empties.isEmpty()) return;
 
-        // 2) Zorluğa göre hamleyi seç
+        // 2) Hard + internet var mı?
+        if (difficultyLevel == 2 && isNetworkAvailable()) {
+            requestBotMoveFromAPI();
+            return;  // asenkron, callback’te applyBotMove çağrılır
+        }
+
+        // 3) Yerel seçim (Easy / Medium / Hard-offline)
         int[] choice;
-        switch (difficultyLevel) {
-            case 1:  // Medium
-                choice = mediumMove(empties);
-                break;
-            case 2:  // Hard
-                choice = minimaxMove();
-                break;
-            case 0:  // Easy
-            default:
-                choice = easyMove(empties);
+        if (difficultyLevel == 1) {
+            choice = mediumMove(empties);
+        } else if (difficultyLevel == 2) {
+            choice = minimaxMove();
+        } else {
+            choice = easyMove(empties);
         }
 
-        // 3) Hamleyi uygula
-        if (choice != null) {
-            Button b = buttons[choice[0]][choice[1]];
-            b.setText("O");
-            moveCount++;
-            playerXTurn = !playerXTurn;
-            textViewStatus.setText(
-                    getString(R.string.status_x_turn)
-            );
-            checkWinner();
-
-            // Beraberlik kontrolü
-            if (moveCount == 9) {
-                textViewStatus.setText(
-                        getString(R.string.msg_draw)
-                );
-                disableButtons();
-            }
-        }
+        applyBotMove(choice);
     }
 
     // Kolay: tamamen rastgele
@@ -493,5 +470,59 @@ public class MainActivity extends AppCompatActivity {
         cfg.setLocale(locale);
         Context ctx = newBase.createConfigurationContext(cfg);
         super.attachBaseContext(ctx);
+    }
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo net = cm.getActiveNetworkInfo();
+        return net != null && net.isConnected();
+    }
+    /** API üzerinden “O” hamlesi iste, hata veya timeout olursa fallback → Minimax **/
+    private void requestBotMoveFromAPI() {
+        // Mevcut board durumunu JSON’a dök
+        JSONArray boardArr = new JSONArray();
+        for (int i = 0; i < 3; i++) {
+            JSONArray row = new JSONArray();
+            for (int j = 0; j < 3; j++) {
+                String cell = buttons[i][j].getText().toString();
+                row.put(cell.isEmpty() ? " " : cell);
+            }
+            boardArr.put(row);
+        }
+
+        new OpenAIBot().requestNextMove(boardArr.toString(), new OpenAIBot.MoveCallback() {
+            @Override
+            public void onMove(int row, int col) {
+                handler.post(() -> {
+                    applyBotMove(new int[]{row, col});
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // API çağrısı başarısız oldu → Minimax’e dön
+                handler.post(() -> {
+                    int[] fallback = minimaxMove();
+                    applyBotMove(fallback);
+                });
+            }
+        });
+    }
+
+    /** Ortak: Hamleyi UI ve game state’e uygular **/
+    private void applyBotMove(int[] choice) {
+        if (choice == null) return;
+        Button b = buttons[choice[0]][choice[1]];
+        b.setText("O");
+        moveCount++;
+        playerXTurn = !playerXTurn;
+        textViewStatus.setText(getString(R.string.status_x_turn));
+        checkWinner();
+
+        // Beraberlik kontrolü
+        if (!gameOver && moveCount == 9) {
+            textViewStatus.setText(getString(R.string.msg_draw));
+            disableButtons();
+        }
     }
 }
