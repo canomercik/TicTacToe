@@ -1,32 +1,42 @@
+
 # Tic Tac Toe Android
 
 ![TicTacToe Banner](https://github.com/canomercik/TicTacToe/blob/main/Banner.gif)
 
-A simple yet feature-rich Tic Tac Toe game built for Android. It demonstrates animations, AI opponents, scoring, and localization.
+A simple yet feature-rich Tic Tac Toe game built for Android. It demonstrates animations, AI opponents (including a ChatGPT-powered “Hard” mode with automatic Minimax fallback), scoring, and localization.
 
 ---
 
 ## 🚀 Features
 
-* **Welcome Screen** with floating "Tap to Start" animation and falling X/O background
-* **Game Modes**: Player vs Player (PvP) and Player vs Bot (PvBot)
-* **Difficulty Levels**: Easy (random), Medium (win/block heuristics), Hard (Minimax algorithm)
-* **Scoring System**: Based on number of moves, time elapsed, and difficulty multiplier with high-score persistence
-* **Localization**: English and Turkish support with runtime language switching
-* **Full-Screen Immersive** experience without status or action bars
+- **Welcome Screen** with floating “Tap to Start” animation and falling X/O background  
+- **Game Modes**: Player vs Player (PvP) and Player vs Bot (PvBot)  
+- **Difficulty Levels**:  
+  - **Easy** (random)  
+  - **Medium** (win/block heuristics)  
+  - **Hard** (“O” moves via OpenAI API; on error or offline, falls back to Minimax)  
+- **Scoring System**: Based on number of moves, time elapsed, and difficulty multiplier with high-score persistence  
+- **Localization**: English and Turkish support with runtime language switching  
+- **Full-Screen Immersive** experience without status or action bars  
 
 ---
 
 ## 🛠 Installation
 
-1. Clone this repository:
-
+1. Clone this repository  
    ```bash
-   git clone https://github.com/<your-username>/tic-tac-toe-android.git
+   git clone https://github.com/canomercik/TicTacToe.git
+
+
+2. **Set your OpenAI API key**
+   In the **project root**, open (or create) `gradle.properties` and add:
+
+   ```properties
+   OPENAI_API_KEY=sk-…your_api_key…
    ```
-2. Open in Android Studio (Arctic Fox or later).
-3. Let Gradle sync and build the project.
-4. Run on an emulator or Android device (API 21+).
+3. Open in Android Studio (Arctic Fox or later).
+4. Let Gradle sync and build the project.
+5. Run on an emulator or Android device (API 21+).
 
 ---
 
@@ -41,11 +51,33 @@ A simple yet feature-rich Tic Tac Toe game built for Android. It demonstrates an
 
 ---
 
-## 🌐 Localization
+## 📦 Dependencies & Permissions
 
-* Default language: English
-* Turkish translations stored in `res/values-tr/`
-* Switch languages at runtime from the Settings button.
+```groovy
+// app/build.gradle
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "com.google.android.material:material:1.9.0"
+
+    // HTTP client for OpenAI API
+    implementation "com.squareup.okhttp3:okhttp:4.11.0"
+    // JSON parsing (Android has org.json built-in, but you can declare explicitly)
+    implementation "org.json:json:20230227"
+}
+
+android {
+    defaultConfig {
+        // Inject your key from gradle.properties
+        buildConfigField "String", "OPENAI_API_KEY", "\"${project.property('OPENAI_API_KEY')}\""
+    }
+}
+```
+
+```xml
+<!-- AndroidManifest.xml -->
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+```
 
 ---
 
@@ -53,7 +85,25 @@ A simple yet feature-rich Tic Tac Toe game built for Android. It demonstrates an
 
 * **Easy**: Chooses a random empty cell.
 * **Medium**: Attempts to win in one move; otherwise blocks opponent; else random.
-* **Hard**: Uses the Minimax algorithm for optimal play.
+* **Hard**:
+
+  1. If network available, sends current board JSON to OpenAI’s Chat API (`gpt-3.5-turbo`).
+  2. On success, parses `{ "row": r, "col": c }` from the response and plays that move.
+  3. On any error (HTTP failure, timeout, offline), automatically falls back to the local Minimax algorithm for an optimal move.
+
+```java
+// sample fallback logic in MainActivity
+if (difficultyLevel == 2 && isNetworkAvailable()) {
+    requestBotMoveFromAPI();           // async OpenAI call
+} else {
+    choice = (difficultyLevel == 1)
+        ? mediumMove(empties)
+        : (difficultyLevel == 2)
+            ? minimaxMove()          // offline Hard fallback
+            : easyMove(empties);
+    applyBotMove(choice);
+}
+```
 
 ---
 
@@ -79,7 +129,8 @@ app/
 ├── src/main/java/com/example/tictactoe/
 │   ├── MainActivity.java
 │   ├── WelcomeActivity.java
-│   └── FallingXOView.java
+│   ├── FallingXOView.java
+│   └── OpenAIBot.java
 ├── src/main/res/
 │   ├── layout/
 │   │   ├── activity_main.xml
@@ -90,7 +141,7 @@ app/
 │   │   ├── dimens.xml
 │   │   └── styles.xml
 │   └── values-tr/strings.xml
-└── docs/    ← screenshots & GIFs
+└── gradle.properties   ← OPENAI_API_KEY
 ```
 
 ---
@@ -104,3 +155,5 @@ Contributions welcome! Feel free to open issues or submit pull requests.
 ## 📄 License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
+```
